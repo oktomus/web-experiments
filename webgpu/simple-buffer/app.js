@@ -3,6 +3,7 @@ import { getGpuDevice } from "./../js/webgpu-device.js";
 // What ?
 // Use a buffer.
 // https://gpuweb.github.io/gpuweb/#GPUBufferq
+// https://github.com/gpuweb/gpuweb
 
 getGpuDevice()
     .then(device => {
@@ -26,8 +27,7 @@ getGpuDevice()
         });
 
         console.log('buffer', buffer);
-        console.log('buffer size', buffer.size);
-        console.log('buffer usage', buffer.usage);
-        console.log('buffer state', buffer.state);
-        console.log('buffer mapping', buffer.mapping);
+
+        // Destroy it.
+        buffer.destroy();
     });
