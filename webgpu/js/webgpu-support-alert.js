@@ -7,15 +7,13 @@ export function checkWebGPUSupport() {
         document.getElementById("support").style.display = 'block';
         document.getElementById("no-support").style.display = 'none';
 
-        return gpu;
+        return Promise.resolve(gpu);
     }
     else
     {
         document.getElementById("support").style.display = 'none';
         document.getElementById("no-support").style.display = 'block';
 
-        console.error("WebGPU not avilable");
-
-        return null;
+        return Promise.reject('WebGPU not available.');
     }
 };
