@@ -1,0 +1,21 @@
+struct FragmentData {
+    float4 position : SV_Position;
+    float4 color : attribute(1);
+}
+
+vertex FragmentData vertex_main(
+    float4 position : attribute(0), 
+    float4 color : attribute(1), 
+    constant float4x4[] modelViewProjectionMatrix : register(b0))
+{
+    FragmentData out;
+    out.position = mul(modelViewProjectionMatrix[0], position);
+    out.color = color;
+    
+    return out;
+}
+
+fragment float4 fragment_main(float4 color : attribute(1)) : SV_Target 0
+{
+    return color;
+}
