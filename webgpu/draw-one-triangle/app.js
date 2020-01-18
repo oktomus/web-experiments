@@ -67,13 +67,13 @@ async function init() {
         const renderPassDescriptor = {
             colorAttachments: [{
                 attachment: textureView,
-                loadValue: { r: 1.0, g: 0.0, b: 0.0, a: 1.0 },
+                loadValue: { r: 0.3, g: 0.2, b: 0.1, a: 1.0 },
             }],
         };
 
         const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
         passEncoder.setPipeline(renderPipeline);
-        //passEncoder.draw(3, 1, 0, 0);
+        passEncoder.draw(3, 1, 0, 0);
         passEncoder.endPass();
 
         device.defaultQueue.submit([commandEncoder.finish()]);
