@@ -1,4 +1,4 @@
-import { checkWebGPUSupport } from "./../js/webgpu-support-alert.js";
+import { checkWebGPUSupport } from "../js/webgpu-support-alert.js";
 
 // What ?
 // Try to access the GPU using WebGPU.
