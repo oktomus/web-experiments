@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google" content="notranslate"/>
+    <title>WebGPU</title>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-default.min.css">
+</head>
+<body>
+    <div class="container">
+       <a href=".." class="button" style="display: block;position: absolute;top:1rem;right:1rem;"><span class="icon-search"></span></a>
+       <h1><mark class="tertiary">WebGPU</mark> Basics 03</h1>
+        <p>Modify a buffer using a compute shader</p>
+        <p>See the console.</p>
+        <hr />        
+        <div id="no-support" style="display: none">
+            <p><mark class="secondary" style="margin-right: 0.5em">Oups: </mark> It seems like WebGPU is not available on your browser.</p>
+            <p>You can enable it on chrome and firefox.</p>
+            <p>
+                <img src="../img/firefox-webgpu.png">
+            </p>
+            <p>
+                <img src="../img/chrome-webgpu.png">
+            </p>
+        </div>
+        <div id="support" style="display: none">
+            <div class="row">
+                <canvas id="compute-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js" type="module"></script>
+</body>
+</html>
