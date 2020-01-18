@@ -53,31 +53,25 @@ async function go() {
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
-    // Create a layout to interface buffers in the shader.
-    // https://gpuweb.github.io/gpuweb/#GPUDevice-createBindGroupLayout
-    const bindGroupLayout = device.createBindGroupLayout({
-        bindings: [
-            {
-                binding: 0,
-                visibility: GPUShaderStage.COMPUTE,
-                type: 'readonly-storage-buffer'
-            },
-            {
-                binding: 1,
-                visibility: GPUShaderStage.COMPUTE,
-                type: 'readonly-storage-buffer'
-            },
-            {
-                binding: 2,
-                visibility: GPUShaderStage.COMPUTE,
-                type: 'storage-buffer'
-            }
-        ]
+    // Compile the shader.
+    // https://developers.google.com/web/updates/2019/08/get-started-with-gpu-compute-on-the-web#pipeline_setup
+    const computeShaderSource = await getShaderSource('./shader.glsl'); // Fetch the source code in a big string.
+    const glslang = await glslangModule(); // Fetch the wasm glslang module.
+    const compiledShader = glslang.compileGLSL(computeShaderSource, 'compute');
+
+    // https://gpuweb.github.io/gpuweb/#dom-gpudevice-createcomputepipeline
+    const computePipeline = device.createComputePipeline({
+        computeStage: {
+            module: device.createShaderModule({
+                code: compiledShader
+            }),
+            entryPoint: 'main'
+        }
     });
 
-    // Reference buffer according to the layout.
+    // Reference buffers according to the shader layout.
     const bindGroup = device.createBindGroup({
-        layout: bindGroupLayout,
+        layout: computePipeline.getBindGroupLayout(0),
         bindings: [
             {
                 binding: 0,
@@ -98,25 +92,6 @@ async function go() {
                 }
             },
         ]
-    });
-
-    // Compile the shader.
-    // https://developers.google.com/web/updates/2019/08/get-started-with-gpu-compute-on-the-web#pipeline_setup
-    const computeShaderSource = await getShaderSource('./shader.glsl'); // Fetch the source code in a big string.
-    const glslang = await glslangModule(); // Fetch the wasm glslang module.
-    const compiledShader = glslang.compileGLSL(computeShaderSource, 'compute');
-
-    // https://gpuweb.github.io/gpuweb/#dom-gpudevice-createcomputepipeline
-    const computePipeline = device.createComputePipeline({
-        layout: device.createPipelineLayout({
-            bindGroupLayouts: [bindGroupLayout]
-        }),
-        computeStage: {
-            module: device.createShaderModule({
-                code: compiledShader
-            }),
-            entryPoint: 'main'
-        }
     });
 
     // Create commands to copy the buffer, run the sader and fetch the result.
