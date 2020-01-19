@@ -1,0 +1,13 @@
+.app-header .gohome {
+    display: inline-block;
+    margin: 0 0.3rem 1rem 0.3rem;
+}
+
+.app-header .gohome span {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.app-header h1 {
+    display: inline-block;
+}

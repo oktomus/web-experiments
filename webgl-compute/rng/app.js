@@ -1,5 +1,5 @@
-import { getComputeContext } from './../js/compute-support.js';
-import { getShaderProgram } from './../js/shader_loader.js';
+import { getComputeContext } from '../../js/webcompute/support.js';
+import { getShaderProgram } from '../../js/webcompute/shader_loader.js';
 
 async function run() {
 
@@ -9,7 +9,7 @@ async function run() {
     canvas.width = canvas.height = 500;
 
     // Compile shader.
-    const rngProgram = await getShaderProgram(context, './glsl/rand.glsl');
+    const rngProgram = await getShaderProgram(context, './rand.glsl');
     if (!rngProgram) return;
 
     // Define uniforms.
