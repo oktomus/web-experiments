@@ -4,16 +4,20 @@ import { getVertFragShaderProgram } from "../../js/webgl/shader.js";
 // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBlendEquation.xhtml
 // http://jcgt.org/published/0002/02/09/
 
-const light_path_count = 50;
+const light_path_count = 10;
 
 var vertices = [];
-var vertex_count = light_path_count * 5;
+var vertex_count = light_path_count * 4;
 
 let shader_program;
+let vertex_buffer;
+
+const z_min = 0.0;
+const z_max = 1.0;
 
 function randX() { return Math.random() * 2.0 - 1.0; }
 function randY() { return Math.random() * 2.0 - 1.0; }
-function randZ() { return Math.random() * 20.0; }
+function randZ() { return Math.random() * (z_max - z_min) + z_min; }
 
 function generateLightPathsData() {
     vertices = [];
@@ -45,9 +49,9 @@ async function compileShaders(gl) {
     shader_program = program;
 }
 
-function draw(gl, width, height) {
+function createBuffer(gl) {
     // Create an empty buffer object
-    var vertex_buffer = gl.createBuffer();
+    vertex_buffer = gl.createBuffer();
 
     // Bind appropriate array buffer to it
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
@@ -57,6 +61,9 @@ function draw(gl, width, height) {
 
     // Unbind the buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+}
+
+function draw(gl, width, height) {
 
     gl.useProgram(shader_program);
 
@@ -102,11 +109,10 @@ async function init(context) {
     canvas.width = canvasSize.width;
     canvas.height = canvasSize.height;
 
-    console.log('GL_BLEND & GL_MAX', gl.BLEND, gl.MAX);
-
     generateLightPathsData();
 
     await compileShaders(gl);
+    createBuffer(gl);
 
     draw(gl, canvas.width, canvas.height);
 }
