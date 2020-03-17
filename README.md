@@ -34,6 +34,10 @@ Check [my blog](https://oktomus.com) where I talk about rendering and shaders.
 - Texture accumulation [[code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/progressive-steps) / [demo](https://oktomus.com/web-experiments/webgl-compute/progressive-steps/)]
 - Random noise [[code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/rng) / [demo](https://oktomus.com/web-experiments/webgl-compute/rng/)]
 
+## Threejs experiments
+
+- Facing ratio [[code](https://github.com/oktomus/web-experiments/tree/master/threejs/facing-ratio)] / [demo](https://oktomus.com/web-experiments/threejs/facing-ratio/)]
+
 # Licence
 
 [MIT](LICENSE)
