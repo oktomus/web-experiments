@@ -1,3 +1,51 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a5e5d7e521ab3c74e7a816cb6c043933b8bd462f8a3b4ec3b6997432f180fde0
-size 755
+/**
+ * @author wongbryan / http://wongbryan.github.io
+ *
+ * Pixelation shader
+ */
+
+
+
+var PixelShader = {
+
+	uniforms: {
+
+		"tDiffuse": { value: null },
+		"resolution": { value: null },
+		"pixelSize": { value: 1. },
+
+	},
+
+	vertexShader: [
+
+		"varying highp vec2 vUv;",
+
+		"void main() {",
+
+		"vUv = uv;",
+		"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+		"}"
+
+	].join( "\n" ),
+
+	fragmentShader: [
+
+		"uniform sampler2D tDiffuse;",
+		"uniform float pixelSize;",
+		"uniform vec2 resolution;",
+
+		"varying highp vec2 vUv;",
+
+		"void main(){",
+
+		"vec2 dxy = pixelSize / resolution;",
+		"vec2 coord = dxy * floor( vUv / dxy );",
+		"gl_FragColor = texture2D(tDiffuse, coord);",
+
+		"}"
+
+	].join( "\n" )
+};
+
+export { PixelShader };

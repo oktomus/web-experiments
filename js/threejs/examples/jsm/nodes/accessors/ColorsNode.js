@@ -1,3 +1,58 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b8e9a7e0486d0b940654818c40eae2763f10e640d93543560c86087baf273f60
-size 1098
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { TempNode } from '../core/TempNode.js';
+
+var vertexDict = [ 'color', 'color2' ],
+	fragmentDict = [ 'vColor', 'vColor2' ];
+
+function ColorsNode( index ) {
+
+	TempNode.call( this, 'v4', { shared: false } );
+
+	this.index = index || 0;
+
+}
+
+ColorsNode.prototype = Object.create( TempNode.prototype );
+ColorsNode.prototype.constructor = ColorsNode;
+ColorsNode.prototype.nodeType = "Colors";
+
+ColorsNode.prototype.generate = function ( builder, output ) {
+
+	builder.requires.color[ this.index ] = true;
+
+	var result = builder.isShader( 'vertex' ) ? vertexDict[ this.index ] : fragmentDict[ this.index ];
+
+	return builder.format( result, this.getType( builder ), output );
+
+};
+
+ColorsNode.prototype.copy = function ( source ) {
+
+	TempNode.prototype.copy.call( this, source );
+
+	this.index = source.index;
+
+	return this;
+
+};
+
+ColorsNode.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		data.index = this.index;
+
+	}
+
+	return data;
+
+};
+
+export { ColorsNode };

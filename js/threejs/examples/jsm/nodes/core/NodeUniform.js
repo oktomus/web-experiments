@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:67e67a462a9f2f393174d4650cd73a420cd91b446bc5711831bcf2d4c111747e
-size 445
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+function NodeUniform( params ) {
+
+	params = params || {};
+
+	this.name = params.name;
+	this.type = params.type;
+	this.node = params.node;
+	this.needsUpdate = params.needsUpdate;
+
+}
+
+Object.defineProperties( NodeUniform.prototype, {
+
+	value: {
+
+		get: function () {
+
+			return this.node.value;
+
+		},
+
+		set: function ( val ) {
+
+			this.node.value = val;
+
+		}
+
+	}
+
+} );
+
+export { NodeUniform };

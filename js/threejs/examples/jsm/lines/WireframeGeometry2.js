@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:472e681d957893826c5f6796a42c00dc37cf2a74a6a7d37f2b7dedbc536532b7
-size 626
+/**
+ * @author WestLangley / http://github.com/WestLangley
+ *
+ */
+
+import {
+	WireframeGeometry
+} from "../../../build/three.module.js";
+import { LineSegmentsGeometry } from "../lines/LineSegmentsGeometry.js";
+
+var WireframeGeometry2 = function ( geometry ) {
+
+	LineSegmentsGeometry.call( this );
+
+	this.type = 'WireframeGeometry2';
+
+	this.fromWireframeGeometry( new WireframeGeometry( geometry ) );
+
+	// set colors, maybe
+
+};
+
+WireframeGeometry2.prototype = Object.assign( Object.create( LineSegmentsGeometry.prototype ), {
+
+	constructor: WireframeGeometry2,
+
+	isWireframeGeometry2: true
+
+} );
+
+export { WireframeGeometry2 };

@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:818cfbb93ee9a354c24bfb0b3e93b60dcc3b1fe725e73a24ecbb0538230e2c57
-size 647
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { InputNode } from '../core/InputNode.js';
+import { TextureNode } from './TextureNode.js';
+
+function ScreenNode( uv ) {
+
+	TextureNode.call( this, undefined, uv );
+
+}
+
+ScreenNode.prototype = Object.create( TextureNode.prototype );
+ScreenNode.prototype.constructor = ScreenNode;
+ScreenNode.prototype.nodeType = "Screen";
+
+ScreenNode.prototype.getUnique = function () {
+
+	return true;
+
+};
+
+ScreenNode.prototype.getTexture = function ( builder, output ) {
+
+	return InputNode.prototype.generate.call( this, builder, output, this.getUuid(), 't', 'renderTexture' );
+
+};
+
+export { ScreenNode };

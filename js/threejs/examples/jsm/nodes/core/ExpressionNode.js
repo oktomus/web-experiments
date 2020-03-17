@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ae7abbd5b1a29e7fc2add5356c5a40502a173f4d1c565cfafa8afbfc72211e18
-size 452
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { FunctionNode } from './FunctionNode.js';
+
+function ExpressionNode( src, type, keywords, extensions, includes ) {
+
+	FunctionNode.call( this, src, includes, extensions, keywords, type );
+
+}
+
+ExpressionNode.prototype = Object.create( FunctionNode.prototype );
+ExpressionNode.prototype.constructor = ExpressionNode;
+ExpressionNode.prototype.nodeType = "Expression";
+
+export { ExpressionNode };

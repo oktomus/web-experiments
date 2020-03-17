@@ -1,3 +1,54 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d048984ed80d0af09409903bf92cde0e1505f356a36397127e55008956812409
-size 712
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * Luminosity
+ * http://en.wikipedia.org/wiki/Luminosity
+ */
+
+
+
+var LuminosityShader = {
+
+	uniforms: {
+
+		"tDiffuse": { value: null }
+
+	},
+
+	vertexShader: [
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+		"	vUv = uv;",
+
+		"	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+		"}"
+
+	].join( "\n" ),
+
+	fragmentShader: [
+
+		"#include <common>",
+
+		"uniform sampler2D tDiffuse;",
+
+		"varying vec2 vUv;",
+
+		"void main() {",
+
+		"	vec4 texel = texture2D( tDiffuse, vUv );",
+
+		"	float l = linearToRelativeLuminance( texel.rgb );",
+
+		"	gl_FragColor = vec4( l, l, l, texel.w );",
+
+		"}"
+
+	].join( "\n" )
+
+};
+
+export { LuminosityShader };

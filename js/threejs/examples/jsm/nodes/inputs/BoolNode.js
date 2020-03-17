@@ -1,3 +1,53 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:10ea56244141c6a4581b860fcaa4ca6c6860cbcb2bd7ba9d89e9e773475b337e
-size 921
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { InputNode } from '../core/InputNode.js';
+
+function BoolNode( value ) {
+
+	InputNode.call( this, 'b' );
+
+	this.value = Boolean( value );
+
+}
+
+BoolNode.prototype = Object.create( InputNode.prototype );
+BoolNode.prototype.constructor = BoolNode;
+BoolNode.prototype.nodeType = "Bool";
+
+BoolNode.prototype.generateReadonly = function ( builder, output, uuid, type/*, ns, needsUpdate */ ) {
+
+	return builder.format( this.value, type, output );
+
+};
+
+BoolNode.prototype.copy = function ( source ) {
+
+	InputNode.prototype.copy.call( this, source );
+
+	this.value = source.value;
+
+	return this;
+
+};
+
+BoolNode.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		data.value = this.value;
+
+		if ( this.readonly === true ) data.readonly = true;
+
+	}
+
+	return data;
+
+};
+
+export { BoolNode };

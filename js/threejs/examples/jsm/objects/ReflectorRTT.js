@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:be32797a196240810bd6fdadedbf0e1d6dcd1f7d62c61180db86bec83401189c
-size 336
+/**
+ * RTT version
+ */
+
+
+import { Reflector } from "../objects/Reflector.js";
+
+var ReflectorRTT = function ( geometry, options ) {
+
+	Reflector.call( this, geometry, options );
+
+	this.geometry.setDrawRange( 0, 0 ); // avoid rendering geometry
+
+};
+
+ReflectorRTT.prototype = Object.create( Reflector.prototype );
+
+export { ReflectorRTT };

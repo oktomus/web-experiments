@@ -1,3 +1,34 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c079437ba6ab4e794340d54102b0acd22685a30a85d0ec85e30ebc89583114ca
-size 773
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { MeshStandardNode } from './nodes/MeshStandardNode.js';
+import { NodeMaterial } from './NodeMaterial.js';
+import { NodeUtils } from '../core/NodeUtils.js';
+
+function MeshStandardNodeMaterial() {
+
+	var node = new MeshStandardNode();
+
+	NodeMaterial.call( this, node, node );
+
+	this.type = "MeshStandardNodeMaterial";
+
+}
+
+MeshStandardNodeMaterial.prototype = Object.create( NodeMaterial.prototype );
+MeshStandardNodeMaterial.prototype.constructor = MeshStandardNodeMaterial;
+
+NodeUtils.addShortcuts( MeshStandardNodeMaterial.prototype, 'properties', [
+	"color",
+	"roughness",
+	"metalness",
+	"map",
+	"normalMap",
+	"normalScale",
+	"metalnessMap",
+	"roughnessMap",
+	"envMap"
+] );
+
+export { MeshStandardNodeMaterial };

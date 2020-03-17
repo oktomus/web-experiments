@@ -1,3 +1,45 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6dbef4c112c57786cc855addb2a0fbd2e829db1fcade5d024b90da41ce236c44
-size 908
+/**
+ * @author Kai Salmen / https://kaisalmen.de
+ * Development repository: https://github.com/kaisalmen/WWOBJLoader
+ */
+
+import { MTLLoader } from "../../../../jsm/loaders/MTLLoader.js";
+
+
+const MtlObjBridge = {
+
+	/**
+	 *
+	 * @param processResult
+	 * @param assetLoader
+	 */
+	link: function ( processResult, assetLoader ) {
+
+		if ( typeof assetLoader.addMaterials === 'function' ) {
+
+			assetLoader.addMaterials( this.addMaterialsFromMtlLoader( processResult ), true );
+
+		}
+
+	},
+
+	/**
+	 * Returns the array instance of {@link MTLLoader.MaterialCreator}.
+	 *
+	 * @param Instance of {@link MTLLoader.MaterialCreator}
+	 */
+	addMaterialsFromMtlLoader: function ( materialCreator ) {
+
+		let newMaterials = {};
+		if ( materialCreator instanceof MTLLoader.MaterialCreator ) {
+
+			materialCreator.preload();
+			newMaterials = materialCreator.materials;
+
+		}
+		return newMaterials;
+
+	}
+};
+
+export { MtlObjBridge };

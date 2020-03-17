@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d56f135d0886cd9b3962448ce256c36f85f62e4ea6b29f29164db51e8cf373a3
-size 646
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { SpriteNode } from './nodes/SpriteNode.js';
+import { NodeMaterial } from './NodeMaterial.js';
+import { NodeUtils } from '../core/NodeUtils.js';
+
+function SpriteNodeMaterial() {
+
+	var node = new SpriteNode();
+
+	NodeMaterial.call( this, node, node );
+
+	this.type = "SpriteNodeMaterial";
+
+}
+
+SpriteNodeMaterial.prototype = Object.create( NodeMaterial.prototype );
+SpriteNodeMaterial.prototype.constructor = SpriteNodeMaterial;
+
+NodeUtils.addShortcuts( SpriteNodeMaterial.prototype, 'fragment', [
+	'color',
+	'alpha',
+	'mask',
+	'position',
+	'spherical'
+] );
+
+export { SpriteNodeMaterial };

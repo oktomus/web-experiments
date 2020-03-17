@@ -1,3 +1,57 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:41e1d3fb3aad3c6209d49e38ede36a44e36da73732b21b80f1db37e578cc25d3
-size 874
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { InputNode } from '../core/InputNode.js';
+
+function PropertyNode( object, property, type ) {
+
+	InputNode.call( this, type );
+
+	this.object = object;
+	this.property = property;
+
+}
+
+PropertyNode.prototype = Object.create( InputNode.prototype );
+PropertyNode.prototype.constructor = PropertyNode;
+PropertyNode.prototype.nodeType = "Property";
+
+Object.defineProperties( PropertyNode.prototype, {
+
+	value: {
+
+		get: function () {
+
+			return this.object[ this.property ];
+
+		},
+
+		set: function ( val ) {
+
+			this.object[ this.property ] = val;
+
+		}
+
+	}
+
+} );
+
+PropertyNode.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		data.value = this.value;
+		data.property = this.property;
+
+	}
+
+	return data;
+
+};
+
+export { PropertyNode };

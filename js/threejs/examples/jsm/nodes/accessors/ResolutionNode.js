@@ -1,3 +1,66 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3c6e9e592b050942038d6a4f29e0e38f0bc3f5b65e6fe28ff9085b87be9a81b8
-size 1182
+/**
+ * @author sunag / http://www.sunag.com.br/
+ */
+
+import { Vector2 } from '../../../../build/three.module.js';
+
+import { Vector2Node } from '../inputs/Vector2Node.js';
+
+function ResolutionNode() {
+
+	Vector2Node.call( this );
+
+	this.size = new Vector2();
+
+}
+
+ResolutionNode.prototype = Object.create( Vector2Node.prototype );
+ResolutionNode.prototype.constructor = ResolutionNode;
+ResolutionNode.prototype.nodeType = "Resolution";
+
+ResolutionNode.prototype.updateFrame = function ( frame ) {
+
+	if ( frame.renderer ) {
+
+		frame.renderer.getSize( this.size );
+
+		var pixelRatio = frame.renderer.getPixelRatio();
+
+		this.x = this.size.width * pixelRatio;
+		this.y = this.size.height * pixelRatio;
+
+	} else {
+
+		console.warn( "ResolutionNode need a renderer in NodeFrame" );
+
+	}
+
+};
+
+ResolutionNode.prototype.copy = function ( source ) {
+
+	Vector2Node.prototype.copy.call( this, source );
+
+	this.renderer = source.renderer;
+
+	return this;
+
+};
+
+ResolutionNode.prototype.toJSON = function ( meta ) {
+
+	var data = this.getJSONNode( meta );
+
+	if ( ! data ) {
+
+		data = this.createJSONNode( meta );
+
+		data.renderer = this.renderer.uuid;
+
+	}
+
+	return data;
+
+};
+
+export { ResolutionNode };
