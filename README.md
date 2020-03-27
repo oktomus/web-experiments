@@ -36,8 +36,8 @@ Keep a buffer over time and add values onto it. Useful in raytracing to do progr
 
 ## WebGPU API: Getting started
 
-|   |   |   |   |   |
-|---|---|---|---|---|
+| What  |  Code link  |  Web demo link  | 
+|---|---|---|
 | Access the GPU  | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-00-init)  | [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-00-init/) |
 | Create a buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-01-create-buffer) | [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-01-create-buffer/) |
 | Create a buffer and copy it to the GPU | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-02-create-send-buffer) | [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-02-create-send-buffer/) |
