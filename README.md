@@ -36,33 +36,15 @@ Keep a buffer over time and add values onto it. Useful in raytracing to do progr
 
 ## WebGPU API: Getting started
 
-Access the GPU:
-- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-00-init)
-- [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-00-init/)
-
-Create a buffer: 
-- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-01-create-buffer)
-[demo](https://oktomus.com/web-experiments/webgpu-basics/basics-01-create-buffer/)
-
-Create a buffer and copy it to the GPU: 
-- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-02-create-send-buffer)
-- [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-02-create-send-buffer/)
-
-Compile and run a compute shader:
-- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/run-shader)
-- [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/run-shader/)
-
-Matrix multiplication with compute shader:
-- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/multiply-matrices) 
-- [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/multiply-matrices/)
-
-Draw a triangle with vertex + fragment shader: 
-- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-one-triangle)
-- [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-one-triangle/)
-
-Draw using a buffer:
-- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-using-buffer)
-- [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-using-buffer/)
+|   |   |   |   |   |
+|---|---|---|---|---|
+| Access the GPU  | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-00-init)  | [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-00-init/) |
+| Create a buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-01-create-buffer) | [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-01-create-buffer/) |
+| Create a buffer and copy it to the GPU | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-02-create-send-buffer) | [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-02-create-send-buffer/) |
+| Compile and run a compute shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/run-shader) | [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/run-shader/) |
+| Matrix multiplication with compute shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/multiply-matrices) | [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/multiply-matrices/) |
+| Draw a triangle with vertex + fragment shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-one-triangle) |  [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-one-triangle/) |
+| Draw using a buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-using-buffer) | [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-using-buffer/) |
 
 
 ## Threejs : facing ratio shader
