@@ -2,7 +2,7 @@ Some of my web experiments. Check [my blog](https://oktomus.com) where I talk ab
 
 🚧 Disclaimer: Most of these are made using draft APIs.
 
-### :sparkles: WebGL 2.0 Compute: toy ray tracer
+### WebGL 2.0 Compute: toy ray tracer
 
 ![ray tracing demo](webgl-compute/toy-raytracer/demo.gif)
 
