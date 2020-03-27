@@ -1,43 +1,75 @@
-Some of my web experiments. You can use them as a tutorial or demonstration of what you can acheive with latest APIs.
+Some of my web experiments. Check [my blog](https://oktomus.com) where I talk about rendering and shaders.
 
-Check [my blog](https://oktomus.com) where I talk about rendering and shaders.
+🚧 Disclaimer: Most of these are made using draft APIs.
 
-🚧 Disclaimer: Most of these are made using non-finished APIs.
+### :sparkles: WebGL 2.0 Compute: toy ray tracer
 
-# Prototypes
+![ray tracing demo](webgl-compute/toy-raytracer/demo.gif)
 
-- :sparkles: Toy raytracer made using WebGL 2.0 Compute [[code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/toy-raytracer) / [demo](https://oktomus.com/web-experiments/webgl-compute/toy-raytracer/)]
+- blogpost [Writing a ray tracer for the web](https://oktomus.com/posts/2020/ray-tracer-with-webgl-compute/)
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/toy-raytracer)
+- [demo](https://oktomus.com/web-experiments/webgl-compute/toy-raytracer/)
 
-# All experiments
+While this ray tracer is not physically correct and boring, it's a good example of what you can acheive with compute shaders in web.
 
-## WebGPU API experiments
+This was made possible thanks to WebGL 2.0 Compute, an experimental feature currently available on Google Chrome (Linux or Windows).
 
-### Compute pipeline
+Many thanks to 9ballsyndrome for his help and especially for his repository WebGL_Compute_shader where you can find really cool stuff made using WebGL 2.0 Compute.
 
-- Compile and run a shader [[code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/run-shader) / [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/run-shader/)]
-- Matrix multiplication [[code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/multiply-matrices) / [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/multiply-matrices/)]
+## WebGL 2.0 Compute: Random number generator
 
-### Realtime pipeline
+![noise](webgl-compute/rng/rng.png)
 
-- Draw a triangle [[code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-one-triangle) / [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-one-triangle/)]
-- Draw using a buffer [[code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-using-buffer) / [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-using-buffer/)]
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/toy-raytracer)
+- [demo](https://oktomus.com/web-experiments/webgl-compute/toy-raytracer/)
 
-### Basics
+How to generate random numbers in a compute shader.
 
-- Access the GPU [[code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-00-init) / [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-00-init/)]
-- Create a buffer [[code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-01-create-buffer) / [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-01-create-buffer/)]
-- Create a buffer and copy it to the GPU [[code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-02-create-send-buffer) / [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-02-create-send-buffer/)]
+## WebGL 2.0 Compute: Framebuffer accumulation
 
-## WebGL 2.0 Compute API experiments
+![accum](webgl-compute/progressive-steps/accum.png)
 
-- Toy raytracer [[code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/toy-raytracer) / [demo](https://oktomus.com/web-experiments/webgl-compute/toy-raytracer/)]
-- Texture accumulation [[code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/progressive-steps) / [demo](https://oktomus.com/web-experiments/webgl-compute/progressive-steps/)]
-- Random noise [[code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/rng) / [demo](https://oktomus.com/web-experiments/webgl-compute/rng/)]
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgl-compute/progressive-steps)
+- [demo](https://oktomus.com/web-experiments/webgl-compute/progressive-steps/)
 
-## Threejs experiments
+Keep a buffer over time and add values onto it. Useful in raytracing to do progressive rendering.
 
-- Facing ratio [[code](https://github.com/oktomus/web-experiments/tree/master/threejs/facing-ratio)] / [demo](https://oktomus.com/web-experiments/threejs/facing-ratio/)]
+## WebGPU API: Getting started
 
-# Licence
+Access the GPU:
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-00-init)
+- [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-00-init/)
 
-[MIT](LICENSE)
+Create a buffer: 
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-01-create-buffer)
+[demo](https://oktomus.com/web-experiments/webgpu-basics/basics-01-create-buffer/)
+
+Create a buffer and copy it to the GPU: 
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-basics/basics-02-create-send-buffer)
+- [demo](https://oktomus.com/web-experiments/webgpu-basics/basics-02-create-send-buffer/)
+
+Compile and run a compute shader:
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/run-shader)
+- [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/run-shader/)
+
+Matrix multiplication with compute shader:
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/multiply-matrices) 
+- [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/multiply-matrices/)
+
+Draw a triangle with vertex + fragment shader: 
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-one-triangle)
+- [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-one-triangle/)
+
+Draw using a buffer:
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-using-buffer)
+- [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-using-buffer/)
+
+
+## Threejs : facing ratio shader
+
+![facing](threejs/facing-ratio/facing.png)
+
+- [code](https://github.com/oktomus/web-experiments/tree/master/threejs/facing-ratio) 
+- [demo](https://oktomus.com/web-experiments/threejs/facing-ratio/)
+
+Really basic shader setup with threejs.
