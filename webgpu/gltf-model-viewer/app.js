@@ -7,6 +7,7 @@ import { Scene } from "./scene.js";
 // https://github.com/gpuweb/gpuweb
 // https://austineng.github.io/webgpu-samples/#helloTriangle
 // https://github.com/toji/gl-matrix
+// https://github.com/redcamel/webgpu
 
 // https://github.com/shrekshao/minimal-gltf-loader
 const gltfLoader = new glTFLoader();
@@ -18,11 +19,26 @@ const shaderConfig = {
 };
 
 const SizeOfFloat = 4;
+let pauseRendering = true;
 
 const config = {
-    vertexShaderLayoutSize: 3 * SizeOfFloat,
-    positionOffset: 0,
-    positionFormat: "float3"
+    vertexShaderBuffer: {
+        arrayStride: 6 * SizeOfFloat,
+        attributes: [
+            {
+                // position
+                shaderLocation: 0,
+                offset: 0,
+                format: "float3",
+            },
+            {
+                // normal
+                shaderLocation: 1,
+                offset: 3 * SizeOfFloat,
+                format: "float3",
+            },
+        ]
+    }
 };
 
 const glTFDropdown = document.getElementById("gltf-model");
@@ -52,7 +68,7 @@ async function init() {
     const vert = glslang.compileGLSL(vertSource, 'vertex');
 
     // Create a render pipeline.
-    const renderPipeline = device.createRenderPipeline({
+    const renderPipelineDescription = {
         vertexStage: {
             module: device.createShaderModule({
                 code: vert,
@@ -71,15 +87,9 @@ async function init() {
         },
         primitiveTopology: "triangle-list",
         vertexState: {
-            vertexBuffers: [{
-                arrayStride: config.vertexShaderLayoutSize,
-                attributes: [{
-                    // position
-                    shaderLocation: shaderConfig.positionAttributeLocation,
-                    offset: config.positionOffset,
-                    format: config.positionFormat,
-                }]
-            }]
+            vertexBuffers: [
+                config.vertexShaderBuffer
+            ]
         },
         rasterizationState: {
             cullMode: 'back',
@@ -87,18 +97,23 @@ async function init() {
         colorStates: [{
             format: "bgra8unorm"
         }],
-    });
+    };
+    const renderPipeline = device.createRenderPipeline(renderPipelineDescription);
 
     let scenes = [];
 
     // Load the model choosen in the dropdown.
     function loadSelectedGLTFModel() {
+        pauseRendering = true;
+
         gltfLoader.loadGLTF(
             glTFDropdown.value,
             glTF => {
                 scenes = [];
                 const newScene = new Scene(glTF, device);
                 scenes.push(newScene);
+
+                pauseRendering = false;
             }
         );
     }
@@ -130,8 +145,10 @@ async function init() {
     }
 
     function loop() {
+
         // Render the frame.
-        frame();
+        if (!pauseRendering)
+            frame();
 
         // Ask for another frame.
         requestAnimationFrame(loop);

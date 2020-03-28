@@ -50,8 +50,29 @@ export class Scene {
                     return;
                 }
 
-                // In the primitive attribute, we have a reference
-                // to the position, normal, uv buffers (and more).
+                // TODO :
+                // Positions, normals and uvs should end up in the same final buffer.
+                // A buffer containg all those data needs to be created.
+
+                // Create the index buffer.
+                const index_buffer_id = primitive.indices;
+                const index_accessor = this.glTF.accessors[index_buffer_id];
+                const index_buffer_view = index_accessor.bufferView;
+                const index_gpu_buffer_usage = GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
+
+                if (index_buffer_view.buffer === null) {
+                    // Place the indices in a 4-bytes aligned array (go from 16bit to 32 bit).
+                    const original_indices = new Int16Array(index_buffer_view.data);
+                    const indices = new Int32Array(original_indices);
+                    index_buffer_view.byteLength = indices.byteLength;
+                    this.create_buffer(index_buffer_view, index_gpu_buffer_usage, indices);
+                }
+
+                primitive.indexBuffer = index_buffer_view;
+                console.log("- Index buffer created.");
+
+                // Create the vertex buffer.
+                // Will contains positions, normals and uvs.
                 const position_attribute = primitive.attributes.POSITION;
                 const position_buffer_view = position_attribute.bufferView;
                 primitive.positionBuffer = position_buffer_view;
@@ -60,21 +81,10 @@ export class Scene {
                     const positions = new Float32Array(position_buffer_view.data);
                     this.create_buffer(position_buffer_view, position_gpu_buffer_usage, positions);
                 }
-                console.log("- Position buffer created.");
 
-                // If not already done, create a buffer for the indices.
-                const index_buffer_id = primitive.indices;
-                const index_buffer_view = this.glTF.accessors[index_buffer_id].bufferView;
-                primitive.indexBuffer = index_buffer_view;
-                const index_gpu_buffer_usage = GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
-                if (index_buffer_view.buffer === null) {
-                    // Place the indices in a 4-bytes aligned array (go from 16bit to 32 bit).
-                    const original_indices = new Int16Array(index_buffer_view.data);
-                    const indices = new Int32Array(original_indices);
-                    index_buffer_view.byteLength = indices.byteLength;
-                    this.create_buffer(index_buffer_view, index_gpu_buffer_usage, indices);
-                }
-                console.log("- Index buffer created.");
+                primitive.vertexBuffer = position_buffer_view;
+                console.log("- Vertex buffer created.");
+
             });
         });
 
