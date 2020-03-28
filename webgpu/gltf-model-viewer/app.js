@@ -1,6 +1,5 @@
 import glslangModule from "../../thirdparties/glslang.js";
 import { glTFLoader } from "../../thirdparties/minimal-gltf-loader.js";
-import { vec3, vec4, quat, mat4 } from "../../thirdparties/gl-matrix/index.js";
 import { getGpuDevice } from "../../js/webgpu/device.js";
 import { getShaderSource } from "../../js/webgpu/shader_loader.js";
 import { Scene } from "./scene.js";
@@ -18,20 +17,12 @@ const shaderConfig = {
     positionAttributeLocation: 0
 };
 
-const triangles = {
-    triangleCount: 2,
-    vertexCount: 6,
-    vertexSize: 4 * 4, // 4 floats (each float is 4 bytes)
-    positionOffset: 0,
-    data: new Float32Array([
-        -0.1, 0.5, 0.0, 1.0,
-        -0.5, -0.5, 0.0, 1.0,
-        -0.1, -0.5, 0.0, 1.0,
+const SizeOfFloat = 4;
 
-        0.1, 0.5, 0.0, 1.0,
-        0.1, -0.5, 0.0, 1.0,
-        0.5, -0.5, 0.0, 1.0
-    ])
+const config = {
+    vertexShaderLayoutSize: 3 * SizeOfFloat,
+    positionOffset: 0,
+    positionFormat: "float3"
 };
 
 async function init() {
@@ -58,14 +49,6 @@ async function init() {
     const frag = glslang.compileGLSL(fragSource, 'fragment');
     const vert = glslang.compileGLSL(vertSource, 'vertex');
 
-    //=> Create a buffer for the triangles.
-    const [verticesBuffer, verticesArrayBuffer] = device.createBufferMapped({
-        size: triangles.data.byteLength,
-        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
-    });
-    new Float32Array(verticesArrayBuffer).set(triangles.data);
-    verticesBuffer.unmap();
-
     // Create a render pipeline.
     const renderPipeline = device.createRenderPipeline({
         vertexStage: {
@@ -87,12 +70,12 @@ async function init() {
         primitiveTopology: "triangle-list",
         vertexState: {
             vertexBuffers: [{
-                arrayStride: triangles.vertexSize,
+                arrayStride: config.vertexShaderLayoutSize,
                 attributes: [{
                     // position
                     shaderLocation: shaderConfig.positionAttributeLocation,
-                    offset: triangles.positionOffset,
-                    format: "float4"
+                    offset: config.positionOffset,
+                    format: config.positionFormat,
                 }]
             }]
         },
@@ -107,7 +90,7 @@ async function init() {
     let scenes = [];
 
     gltfLoader.loadGLTF(
-        "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf",
+        "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Triangle/glTF/Triangle.gltf",
         glTF => {
             scenes = [];
             const newScene = new Scene(glTF, device);
@@ -133,9 +116,6 @@ async function init() {
         scenes.forEach(scene => {
             scene.draw(passEncoder);
         })
-
-        passEncoder.setVertexBuffer(0, verticesBuffer);
-        passEncoder.draw(triangles.vertexCount, triangles.triangleCount, 0, 0);
 
         passEncoder.endPass();
 

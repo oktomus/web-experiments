@@ -12,8 +12,7 @@ export class Scene {
 
         this.print_glTF();
 
-        this.create_vertex_arrays();
-        this.link_buffer_to_primitives();
+        this.create_gpu_buffers();
     }
 
     /**
@@ -27,69 +26,77 @@ export class Scene {
             `- Version ${this.glTF.version}\n` +
             `- Default scene name: ${this.defaultScene.name}\n` +
             `- ${this.glTF.scenes.length} scene(s)\n` +
-            `- ${this.glTF.images.length} image(s)\n` +
-            `- ${this.glTF.materials.length} material(s)\n` +
+            `- ${this.glTF.images?.length ?? 0} image(s)\n` +
+            `- ${this.glTF.materials?.length ?? 0} material(s)\n` +
             `- ${this.glTF.meshes.length} meshe(s)\n` +
             `- ${this.glTF.nodes.length} node(s)\n` +
             `- ${this.glTF.bufferViews.length} buffer view(s)\n` +
-            `- ${this.glTF.textures.length} texture(s)\n`
+            `- ${this.glTF.textures?.length ?? 0} texture(s)\n`
             );
     }
 
     /**
-     * Create buffers on the GPU.
-     */
-    create_vertex_arrays() {
-
-        this.glTF.bufferViews.forEach(bufferView => {
-            // console.log(bufferView);
-
-            // Create the buffer.
-            const [buffer, arrayBuffer] = this.gpuDevice.createBufferMapped({
-                size: bufferView.byteLength,
-                usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
-            });
-
-            // Fill it.
-            new Float32Array(arrayBuffer).set(bufferView.data);
-
-            // Prepare buffer for GPU operations.
-            buffer.unmap();
-
-            bufferView.buffer = buffer;
-        });
-
-        console.log(`Created ${this.glTF.bufferViews.length} vertex array(s).`);
-    }
-
-    /**
      * Ensure all primitive in the glTF scene
-     * have a reference to the GPU buffer for
-     * drawing.
+     * have a their buffers available on GPU.
      */
-    link_buffer_to_primitives() {
+    create_gpu_buffers() {
 
         this.glTF.meshes.forEach(mesh => {
+            console.log(`Creating GPU buffers for mesh ${name ?? "unamed"}...`);
             mesh.primitives.forEach(primitive => {
 
-                if (primitive.indicies === null) {
+                if (primitive.indices === null) {
                     console.error(`Primitive not using indices are not supported`);
                     return;
                 }
 
-                // Create the buffer.
-                const [vertexBuffer, vertexArray] = this.gpuDevice.createBufferMapped({
-                    size: bufferView.byteLength,
-                    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
-                });
+                // In the primitive attribute, we have a reference
+                // to the position, normal, uv buffers (and more).
+                const position_attribute = primitive.attributes.POSITION;
+                const position_buffer_view = position_attribute.bufferView;
+                primitive.positionBuffer = position_buffer_view;
+                const position_gpu_buffer_usage = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
+                if (position_buffer_view.buffer === null) {
+                    const positions = new Float32Array(position_buffer_view.data);
+                    this.create_buffer(position_buffer_view, position_gpu_buffer_usage, positions);
+                }
+                console.log("- Position buffer created.");
 
-
-
-
+                // If not already done, create a buffer for the indices.
+                const index_buffer_id = primitive.indices;
+                const index_buffer_view = this.glTF.accessors[index_buffer_id].bufferView;
+                primitive.indexBuffer = index_buffer_view;
+                const index_gpu_buffer_usage = GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
+                if (index_buffer_view.buffer === null) {
+                    // Place the indices in a 4-bytes aligned array (go from 16bit to 32 bit).
+                    const original_indices = new Int16Array(index_buffer_view.data);
+                    const indices = new Int32Array(original_indices);
+                    index_buffer_view.byteLength = indices.byteLength;
+                    this.create_buffer(index_buffer_view, index_gpu_buffer_usage, indices);
+                }
+                console.log("- Index buffer created.");
             });
         });
 
         console.log(`Linked GPU buffers to all mesh primitives.`);
+    }
+
+    /**
+     * Create a GPU buffer for the given glTF buffer view.
+     * @param {*} buffer_view
+     * @param {*} usage See https://gpuweb.github.io/gpuweb/#buffer-usage
+     */
+    create_buffer(buffer_view, usage, data) {
+
+        console.assert(buffer_view.buffer === null); // should not be initialized
+        console.assert(data.byteLength % 4 == 0); // Must be 4 bytes aligned
+
+        // Create the GPU buffer.
+        buffer_view.buffer = this.gpuDevice.createBuffer({
+            size: data.byteLength,
+            usage
+        });
+        buffer_view.buffer.setSubData(0, data);
     }
 
     /**
@@ -122,7 +129,7 @@ export class Scene {
         }
 
         // Draw childrens.
-        node.childrens.forEach(childNode => {
+        node.children.forEach(childNode => {
             draw_node(passEncoder, childNode);
         });
     }
@@ -136,10 +143,11 @@ export class Scene {
      */
     draw_primitive(passEncoder, node, mesh, primitive)
     {
-        console.log(primitive);
-
-        passEncoder.setVertexBuffer(0, primitive.vertexArray);
+        //passEncoder.setVertexBuffer(0, primitive.vertexArray);
         //passEncoder.draw(primitive.vertexCount, primitive.triangleCount, 0, 0);
                             //gl.drawArrays(primitive.mode, primitive.drawArraysOffset, primitive.drawArraysCount);
+        passEncoder.setVertexBuffer(0, primitive.positionBuffer.buffer);
+        passEncoder.setIndexBuffer(primitive.indexBuffer.buffer);
+        passEncoder.drawIndexed(primitive.indicesLength, 1, 0, 0, 0);
     }
 }
