@@ -1,8 +1,8 @@
+import glslangModule from "../../thirdparties/glslang.js";
+import { glTFLoader } from "../../thirdparties/minimal-gltf-loader.js";
+import { vec3, vec4, quat, mat4 } from "../../thirdparties/gl-matrix/index.js";
 import { getGpuDevice } from "../../js/webgpu/device.js";
-import glslangModule from 'https://unpkg.com/@webgpu/glslang@0.0.8/dist/web-devel/glslang.js';
 import { getShaderSource } from "../../js/webgpu/shader_loader.js";
-import { vec3, vec4, quat, mat4 } from "../../js/gl-matrix/index.js";
-import { glTFLoader } from "../../js/minimal-gltf-loader.js";
 import { Scene } from "./scene.js";
 
 // https://github.com/gpuweb/gpuweb

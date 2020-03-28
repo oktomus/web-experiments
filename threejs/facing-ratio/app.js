@@ -1,6 +1,6 @@
-import * as THREE from './../../js/threejs/build/three.module.js';
-import { OBJLoader2 } from '../../js/threejs/examples/jsm/loaders/OBJLoader2.js';
-import { OrbitControls } from '../../js/threejs/examples/jsm/controls/OrbitControls.js';
+import * as THREE from './../../thirdparties/threejs/build/three.module.js';
+import { OBJLoader2 } from '../../thirdparties/threejs/examples/jsm/loaders/OBJLoader2.js';
+import { OrbitControls } from '../../thirdparties/threejs/examples/jsm/controls/OrbitControls.js';
 import { getShaderSource } from '../../js/webgl/shader.js'
 
 async function go() {

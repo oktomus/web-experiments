@@ -1,5 +1,5 @@
 import { getGpuDevice } from "../../js/webgpu/device.js";
-import glslangModule from 'https://unpkg.com/@webgpu/glslang@0.0.8/dist/web-devel/glslang.js';
+import glslangModule from "../../thirdparties/glslang.js";
 import { getShaderSource } from "../../js/webgpu/shader_loader.js";
 
 // https://github.com/gpuweb/gpuweb

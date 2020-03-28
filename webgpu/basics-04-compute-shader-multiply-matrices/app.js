@@ -1,5 +1,5 @@
 import { getGpuDevice } from "../../js/webgpu/device.js";
-import glslangModule from 'https://unpkg.com/@webgpu/glslang@0.0.8/dist/web-devel/glslang.js';
+import glslangModule from "../../thirdparties/glslang.js";
 import { getShaderSource } from "../../js/webgpu/shader_loader.js";
 
 // https://gpuweb.github.io/gpuweb/#GPUBufferq
@@ -24,7 +24,7 @@ async function go() {
         5, 6,
         7, 8
     ]);
-    
+
     console.log('First matrix:', firstMatrix);
     console.log('Second matrix:', secondMatrix);
 
@@ -111,7 +111,7 @@ async function go() {
 
     // Encode commands for copying buffer to buffer.
     commandEncoder.copyBufferToBuffer(
-        resultBuffer,       // source buffer 
+        resultBuffer,       // source buffer
         0,                  // source offset
         gpuReadBuffer,      // destination buffer
         0,                  // destination offset
