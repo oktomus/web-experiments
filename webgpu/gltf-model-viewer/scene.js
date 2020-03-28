@@ -130,7 +130,7 @@ export class Scene {
 
         // Draw childrens.
         node.children.forEach(childNode => {
-            draw_node(passEncoder, childNode);
+            this.draw_node(passEncoder, childNode);
         });
     }
 

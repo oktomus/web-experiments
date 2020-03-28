@@ -25,6 +25,8 @@ const config = {
     positionFormat: "float3"
 };
 
+const glTFDropdown = document.getElementById("gltf-model");
+
 async function init() {
     const device = await getGpuDevice();
 
@@ -89,14 +91,19 @@ async function init() {
 
     let scenes = [];
 
-    gltfLoader.loadGLTF(
-        "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Triangle/glTF/Triangle.gltf",
-        glTF => {
-            scenes = [];
-            const newScene = new Scene(glTF, device);
-            scenes.push(newScene);
-        }
-    );
+    // Load the model choosen in the dropdown.
+    function loadSelectedGLTFModel() {
+        gltfLoader.loadGLTF(
+            glTFDropdown.value,
+            glTF => {
+                scenes = [];
+                const newScene = new Scene(glTF, device);
+                scenes.push(newScene);
+            }
+        );
+    }
+    glTFDropdown.addEventListener("change", loadSelectedGLTFModel);
+    loadSelectedGLTFModel(); // initial load when opening the page
 
     function frame() {
         const commandEncoder = device.createCommandEncoder();
