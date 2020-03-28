@@ -46,6 +46,7 @@ Keep a buffer over time and add values onto it. Useful in raytracing to do progr
 | Draw a triangle with vertex + fragment shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-05-draw-one-triangle) |  [demo](https://oktomus.com/web-experiments/webgpu/basics-05-draw-one-triangle/) |
 | Draw using a vertex buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-06-draw-vertex-buffer) | [demo](https://oktomus.com/web-experiments/webgpu/basics-06-draw-vertex-buffer/) |
 | Draw using a index buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-07-draw-vertex-and-index-buffer) | [demo](https://oktomus.com/web-experiments/webgpu/basics-07-draw-vertex-and-index-buffer/) |
+| Use uniforms in fragment shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-08-uniforms) | [demo](https://oktomus.com/web-experiments/webgpu/basics-08-uniforms) |
 
 
 ## Threejs : facing ratio shader
