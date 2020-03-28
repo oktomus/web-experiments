@@ -44,7 +44,8 @@ Keep a buffer over time and add values onto it. Useful in raytracing to do progr
 | Compile and run a compute shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/run-shader) | [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/run-shader/) |
 | Matrix multiplication with compute shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-compute-pipeline/multiply-matrices) | [demo](https://oktomus.com/web-experiments/webgpu-compute-pipeline/multiply-matrices/) |
 | Draw a triangle with vertex + fragment shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-one-triangle) |  [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-one-triangle/) |
-| Draw using a buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-using-buffer) | [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-using-buffer/) |
+| Draw using a vertex buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-using-buffer) | [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-using-buffer/) |
+| Draw using a index buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu-realtime-pipeline/draw-using-indices) | [demo](https://oktomus.com/web-experiments/webgpu-realtime-pipeline/draw-using-indices/) |
 
 
 ## Threejs : facing ratio shader
