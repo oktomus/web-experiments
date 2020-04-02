@@ -50,39 +50,12 @@ export class Scene {
                     return;
                 }
 
-                // TODO :
-                // Positions, normals and uvs should end up in the same final buffer.
-                // A buffer containg all those data needs to be created.
-
                 // Create the index buffer.
-                const index_buffer_id = primitive.indices;
-                const index_accessor = this.glTF.accessors[index_buffer_id];
-                const index_buffer_view = index_accessor.bufferView;
-                const index_gpu_buffer_usage = GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
-
-                if (index_buffer_view.buffer === null) {
-                    // Place the indices in a 4-bytes aligned array (go from 16bit to 32 bit).
-                    const original_indices = new Int16Array(index_buffer_view.data);
-                    const indices = new Int32Array(original_indices);
-                    index_buffer_view.byteLength = indices.byteLength;
-                    this.create_buffer(index_buffer_view, index_gpu_buffer_usage, indices);
-                }
-
-                primitive.indexBuffer = index_buffer_view;
+                primitive.indexBuffer = this.create_primitive_index_buffer(primitive);
                 console.log("- Index buffer created.");
 
-                // Create the vertex buffer.
-                // Will contains positions, normals and uvs.
-                const position_attribute = primitive.attributes.POSITION;
-                const position_buffer_view = position_attribute.bufferView;
-                primitive.positionBuffer = position_buffer_view;
-                const position_gpu_buffer_usage = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
-                if (position_buffer_view.buffer === null) {
-                    const positions = new Float32Array(position_buffer_view.data);
-                    this.create_buffer(position_buffer_view, position_gpu_buffer_usage, positions);
-                }
-
-                primitive.vertexBuffer = position_buffer_view;
+                // Create vertex buffer.
+                primitive.vertexBuffer = this.create_primitive_vertex_buffer(primitive);
                 console.log("- Vertex buffer created.");
 
             });
@@ -91,22 +64,51 @@ export class Scene {
         console.log(`Linked GPU buffers to all mesh primitives.`);
     }
 
-    /**
-     * Create a GPU buffer for the given glTF buffer view.
-     * @param {*} buffer_view
-     * @param {*} usage See https://gpuweb.github.io/gpuweb/#buffer-usage
-     */
-    create_buffer(buffer_view, usage, data) {
+    create_primitive_index_buffer(primitive) {
 
-        console.assert(buffer_view.buffer === null); // should not be initialized
-        console.assert(data.byteLength % 4 == 0); // Must be 4 bytes aligned
+        const index_buffer_id = primitive.indices;
+        const index_accessor = this.glTF.accessors[index_buffer_id];
+        const index_buffer_view = index_accessor.bufferView;
+
+        // Place the indices in a 4-bytes aligned array (go from 16bit to 32 bit).
+        const original_indices = new Int16Array(index_buffer_view.data);
+        const indices = new Int32Array(original_indices);
 
         // Create the GPU buffer.
-        buffer_view.buffer = this.gpuDevice.createBuffer({
-            size: data.byteLength,
-            usage
+        const buffer = this.gpuDevice.createBuffer({
+            size: indices.byteLength,
+            usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST
         });
-        buffer_view.buffer.setSubData(0, data);
+        buffer.setSubData(0, indices);
+
+        return buffer;
+    }
+
+    create_primitive_vertex_buffer(primitive) {
+
+        const hasPosition = primitive.attributes.POSITION;
+        const hasNormal = primitive.attributes.NORMAL;
+
+        let vertexBufferData = null;
+
+        if (hasPosition && hasNormal) {
+
+            const positionData = new Float32Array(primitive.attributes.POSITION.bufferView.data);
+            const normalData = new Float32Array(primitive.attributes.NORMAL.bufferView.data);
+
+            vertexBufferData = combine_vec3_and_normals(positionData, normalData);
+        }
+
+        console.assert(vertexBufferData);
+
+        // Create the vertex buffer.
+        const vertexBuffer = this.gpuDevice.createBuffer({
+            size: vertexBufferData.byteLength,
+            usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
+        });
+        vertexBuffer.setSubData(0, vertexBufferData);
+
+        return vertexBuffer;
     }
 
     /**
@@ -153,11 +155,39 @@ export class Scene {
      */
     draw_primitive(passEncoder, node, mesh, primitive)
     {
-        //passEncoder.setVertexBuffer(0, primitive.vertexArray);
-        //passEncoder.draw(primitive.vertexCount, primitive.triangleCount, 0, 0);
-                            //gl.drawArrays(primitive.mode, primitive.drawArraysOffset, primitive.drawArraysCount);
-        passEncoder.setVertexBuffer(0, primitive.positionBuffer.buffer);
-        passEncoder.setIndexBuffer(primitive.indexBuffer.buffer);
+        passEncoder.setVertexBuffer(0, primitive.vertexBuffer);
+        passEncoder.setIndexBuffer(primitive.indexBuffer);
         passEncoder.drawIndexed(primitive.indicesLength, 1, 0, 0, 0);
     }
+}
+
+function combine_vec3_and_normals(position, normal) {
+
+    const totalLength = position.length + normal.length;
+    const resultingBuffer = new Float32Array(totalLength);
+
+    // How much float per element in the final buffer ?
+    // position : vec3
+    // normal : vec3
+    // 6
+
+    // How much vec3/normal is there in the final buffer ?
+    const elementCount = totalLength / 6;
+
+    for (var i = 0; i < elementCount; i++) {
+
+        const writeIndex = i * 6;
+        const positionIndex = i * 3; // Positions are stored 3 by 3
+        const normalIndex = i * 3; // Normals are stored 3 by 3
+
+        resultingBuffer[writeIndex] = position[positionIndex];
+        resultingBuffer[writeIndex + 1] = position[positionIndex + 1];
+        resultingBuffer[writeIndex + 2] = position[positionIndex + 2];
+
+        resultingBuffer[writeIndex + 3] = normal[normalIndex];
+        resultingBuffer[writeIndex + 4] = normal[normalIndex + 1];
+        resultingBuffer[writeIndex + 5] = normal[normalIndex + 2];
+    }
+
+    return resultingBuffer;
 }
