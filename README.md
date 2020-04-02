@@ -48,6 +48,7 @@ Keep a buffer over time and add values onto it. Useful in raytracing to do progr
 | Draw using a index buffer | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-07-draw-vertex-and-index-buffer) | [demo](https://oktomus.com/web-experiments/webgpu/basics-07-draw-vertex-and-index-buffer/) |
 | Use uniforms in fragment shader | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-08-uniforms) | [demo](https://oktomus.com/web-experiments/webgpu/basics-08-uniforms) |
 | Load and sample a texture | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-09-sample-texture) | [demo](https://oktomus.com/web-experiments/webgpu/basics-09-sample-texture) |
+| Create a buffer that combines vertices and uvs | [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/basics-10-build-vertex-buffer) | [demo](https://oktomus.com/web-experiments/webgpu/basics-10-build-vertex-buffer) |
 
 
 ## Threejs : facing ratio shader
