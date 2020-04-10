@@ -31,8 +31,7 @@ export class Scene {
             `- ${this.glTF.meshes.length} meshe(s)\n` +
             `- ${this.glTF.nodes.length} node(s)\n` +
             `- ${this.glTF.bufferViews.length} buffer view(s)\n` +
-            `- ${this.glTF.textures?.length ?? 0} texture(s)\n`
-            );
+            `- ${this.glTF.textures?.length ?? 0} texture(s)\n`);
     }
 
     /**

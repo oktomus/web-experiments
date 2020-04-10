@@ -3,6 +3,7 @@ import { glTFLoader } from "../../thirdparties/minimal-gltf-loader.js";
 import { getGpuDevice } from "../../js/webgpu/device.js";
 import { getShaderSource } from "../../js/webgpu/shader_loader.js";
 import { Scene } from "./scene.js";
+import { mat4, vec3 } from "../../thirdparties/gl-matrix/index.js";
 
 // https://github.com/gpuweb/gpuweb
 // https://austineng.github.io/webgpu-samples/#helloTriangle
@@ -22,6 +23,10 @@ const SizeOfFloat = 4;
 let pauseRendering = true;
 
 const config = {
+    radius: 5.0,
+    swapChainFormat: "bgra8unorm",
+    depthFromat: "depth32float",
+    time: 0.0,
     vertexShaderBuffer: {
         arrayStride: 6 * SizeOfFloat,
         attributes: [
@@ -38,6 +43,9 @@ const config = {
                 format: "float3",
             },
         ]
+    },
+    uniforms: {
+        size: 4 * 4 * SizeOfFloat, // mat4
     }
 };
 
@@ -57,7 +65,7 @@ async function init() {
 
     const swapChain = context.configureSwapChain({
         device: device,
-        format: "bgra8unorm"
+        format: config.swapChainFormat
     });
 
     //=> Compile shaders.
@@ -67,8 +75,46 @@ async function init() {
     const frag = glslang.compileGLSL(fragSource, 'fragment');
     const vert = glslang.compileGLSL(vertSource, 'vertex');
 
+    //=> Describe the uniforms layout.
+    // (See the shaders).
+    // https://gpuweb.github.io/gpuweb/#dom-gpudevice-createbindgrouplayout
+    // https://gpuweb.github.io/gpuweb/#bind-group-layout-creation
+    const uniformsBindGroupLayout = device.createBindGroupLayout({
+        entries: [
+            {
+                binding: 0,
+                visibility: GPUShaderStage.VERTEX,
+                type: "uniform-buffer"
+            }
+        ]
+    });
+
+    //=> Create a buffer for the uniforms.
+    const uniformBuffer = device.createBuffer({
+        size: config.uniforms.size,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+
+    //=> Create a bind for the uniforms that will be used for rendering.
+    // https://gpuweb.github.io/gpuweb/#dom-gpudevice-createbindgroup
+	const uniformBindGroup = device.createBindGroup(
+        {
+            layout: uniformsBindGroupLayout,
+            entries: [
+                {
+                    binding: 0,
+                    resource: {
+                        buffer: uniformBuffer,
+                        offset: 0,
+                        size: config.uniforms.size
+                    }
+                }
+            ]
+        });
+
     // Create a render pipeline.
     const renderPipelineDescription = {
+        layout: device.createPipelineLayout({bindGroupLayouts: [uniformsBindGroupLayout]}),
         vertexStage: {
             module: device.createShaderModule({
                 code: vert,
@@ -95,10 +141,26 @@ async function init() {
             cullMode: 'back',
         },
         colorStates: [{
-            format: "bgra8unorm"
+            format: config.swapChainFormat,
         }],
+        depthStencilState: {
+			depthWriteEnabled: true,
+			depthCompare: "less",
+			format: config.depthFromat,
+		},
     };
     const renderPipeline = device.createRenderPipeline(renderPipelineDescription);
+
+    // We need a texture for depth-test.
+    const depthTexture = device.createTexture({
+		size: {
+			width: canvas.width,
+			height: canvas.height,
+			depth: 1
+		},
+		format: config.depthFromat,
+		usage: GPUTextureUsage.OUTPUT_ATTACHMENT
+	});
 
     let scenes = [];
 
@@ -129,10 +191,40 @@ async function init() {
                 attachment: textureView,
                 loadValue: { r: 0.3, g: 0.2, b: 0.1, a: 1.0 },
             }],
+            depthStencilAttachment: {
+				attachment: depthTexture.createView(),
+				depthLoadValue: 1.0,
+				depthStoreOp: "store",
+				stencilLoadValue: 0,
+				stencilStoreOp: "store",
+			}
         };
 
         const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
         passEncoder.setPipeline(renderPipeline);
+
+        passEncoder.setBindGroup(0, uniformBindGroup);
+
+        // Let's make a camera matrix !
+        // By copying some code online...
+        let perspective = mat4.create();
+        mat4.perspective(perspective, 0.785, canvas.width / canvas.height, 0.00001, 10000);
+
+        const radius = config.radius;
+        const betterTime = config.time * 0.001;
+        const camX = Math.sin(betterTime) * radius;
+        const camZ = Math.cos(betterTime) * radius;
+        let view = mat4.create();
+        view = mat4.lookAt(
+            view,
+            vec3.fromValues(camX, 0.0, camZ),
+            vec3.fromValues(0.0, 0.0, 0.0),
+            vec3.fromValues(0.0, 1.0, 0.0));
+
+        const mvp = mat4.create();
+        mat4.mul(mvp, perspective, view);
+
+        uniformBuffer.setSubData(0, mvp);
 
         // Draw the scene.
         scenes.forEach(scene => {
@@ -144,7 +236,11 @@ async function init() {
         device.defaultQueue.submit([commandEncoder.finish()]);
     }
 
+    const startTime = performance.now();
+
     function loop() {
+
+        config.time = performance.now() - startTime;
 
         // Render the frame.
         if (!pauseRendering)
@@ -153,6 +249,12 @@ async function init() {
         // Ask for another frame.
         requestAnimationFrame(loop);
     }
+
+    // User interactions.
+    canvas.addEventListener('wheel', function(event){
+        config.radius += event.deltaY * 0.001;
+        return false;
+    }, false);
 
     // Start the continuous render.
     loop();
