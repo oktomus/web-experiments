@@ -156,7 +156,7 @@ export class Scene {
     {
         passEncoder.setVertexBuffer(0, primitive.vertexBuffer);
         passEncoder.setIndexBuffer(primitive.indexBuffer);
-        passEncoder.drawIndexed(primitive.indicesLength, 1, 0, 0, 0);
+        passEncoder.drawIndexed(primitive.indicesLength);
     }
 }
 

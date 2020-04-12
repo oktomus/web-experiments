@@ -24,8 +24,9 @@ let pauseRendering = true;
 
 const config = {
     radius: 5.0,
+    rotateTable: 0.0,
     swapChainFormat: "bgra8unorm",
-    depthFromat: "depth32float",
+    depthFromat: "depth24plus-stencil8",
     time: 0.0,
     vertexShaderBuffer: {
         arrayStride: 6 * SizeOfFloat,
@@ -46,7 +47,8 @@ const config = {
     },
     uniforms: {
         size: 4 * 4 * SizeOfFloat, // mat4
-    }
+    },
+    mousedown: false
 };
 
 const glTFDropdown = document.getElementById("gltf-model");
@@ -133,6 +135,7 @@ async function init() {
         },
         primitiveTopology: "triangle-list",
         vertexState: {
+            indexFormat: 'uint32',
             vertexBuffers: [
                 config.vertexShaderBuffer
             ]
@@ -142,6 +145,11 @@ async function init() {
         },
         colorStates: [{
             format: config.swapChainFormat,
+            alphaBlend: {
+                srcFactor: "src-alpha",
+                dstFactor: "one-minus-src-alpha",
+                operation: "add"
+            }
         }],
         depthStencilState: {
 			depthWriteEnabled: true,
@@ -208,12 +216,12 @@ async function init() {
         // Let's make a camera matrix !
         // By copying some code online...
         let perspective = mat4.create();
-        mat4.perspective(perspective, 0.785, canvas.width / canvas.height, 0.00001, 10000);
+        let aspect = Math.abs(canvas.width / canvas.height);
+        mat4.perspective(perspective, (2 * Math.PI) / 5, aspect, 0.1, 100);
 
         const radius = config.radius;
-        const betterTime = config.time * 0.001;
-        const camX = Math.sin(betterTime) * radius;
-        const camZ = Math.cos(betterTime) * radius;
+        const camX = Math.sin(config.rotateTable) * radius;
+        const camZ = Math.cos(config.rotateTable) * radius;
         let view = mat4.create();
         view = mat4.lookAt(
             view,
@@ -236,11 +244,13 @@ async function init() {
         device.defaultQueue.submit([commandEncoder.finish()]);
     }
 
-    const startTime = performance.now();
-
     function loop() {
 
-        config.time = performance.now() - startTime;
+        const laps = performance.now() - config.time;
+        config.time += laps;
+
+        if (!config.mousedown)
+            config.rotateTable += laps * 0.001;
 
         // Render the frame.
         if (!pauseRendering)
@@ -254,6 +264,12 @@ async function init() {
     canvas.addEventListener('wheel', function(event){
         config.radius += event.deltaY * 0.001;
         return false;
+    }, false);
+    canvas.addEventListener('mousedown', function(event){
+        config.mousedown = true;
+    }, false);
+    canvas.addEventListener('mouseup', function(event){
+        config.mousedown = false;
     }, false);
 
     // Start the continuous render.
