@@ -40,7 +40,7 @@ export class Renderer {
 
     await this.compile_shaders();
 
-    return true;
+    return this.context != null;
   }
 
   attach_mouse_events() {
@@ -109,7 +109,7 @@ export class Renderer {
     // We must pad to fit in vec4 -> https://stackoverflow.com/questions/29531237/memory-allocation-with-std430-qualifier.
     const vertices_buffer = new Float32Array((total_vertice_count / 3) * 4);
 
-    let gpu_i = 0; 
+    let gpu_i = 0;
     let triangles_buffer = new Array();
     let indices_offset = 0;
     let accumulating_triangle_count = 0;
@@ -259,11 +259,11 @@ export class Renderer {
     {
       return;
     }
-    
+
     //=> Bind the textures.
     this.context.bindImageTexture(0, this.frameTexture, 0, false, 0, this.context.READ_WRITE, this.context.RGBA8);
     this.context.bindImageTexture(1, this.accumulatedTexture, 0, false, 0, this.context.READ_WRITE, this.context.RGBA8);
-    
+
     //=> Configure the camera.
     const camera_perspective = glm.perspective(glm.radians(this.camera_fov), this.frame_width / this.frame_height, 0.1, 100.0);
     const inverse_camera_perspective = glm.inverse(camera_perspective);
@@ -273,7 +273,7 @@ export class Renderer {
     camera_world_matrix = glm.translate(camera_world_matrix, this.camera_position);
 
     const t0 = performance.now();
-    
+
     this.context.useProgram(this.renderProgram);
 
     //=> Bind the buffers to the rendering shader.
@@ -303,7 +303,7 @@ export class Renderer {
       0, 0, this.frame_width, this.frame_height,
       0, 0, this.frame_width, this.frame_height,
       this.context.COLOR_BUFFER_BIT, this.context.NEAREST);
-      
+
     //=> Compute metrics.
     const t1 = performance.now();
     const timeSpentInSecondes = (t1 - t0) / 1000.0;
