@@ -34,7 +34,16 @@ How to generate random numbers in a compute shader.
 
 Keep a buffer over time and add values onto it. Useful in raytracing to do progressive rendering.
 
-## WebGPU API: Getting started
+## WebGPU: glTF Viewer
+
+A non-finished attempt at foind a glTF viewer like [minimal-gltf-loader](https://github.com/shrekshao/minimal-gltf-loader) with the WebGPU API.
+
+![viewer](webgpu/gltf-model-viewer/viewer.gif)
+
+- [code](https://github.com/oktomus/web-experiments/tree/master/webgpu/gltf-model-viewer)
+- [demo](https://oktomus.com/web-experiments/webgpu/gltf-model-viewer)
+
+## WebGPU: Getting started
 
 | What  |  Code link  |  Web demo link  | 
 |---|---|---|
